@@ -1,0 +1,49 @@
+# R specific files
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj
+*.Rproj.user/
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+Rplots.pdf
+
+# History files
+.history/
+archive/
+
+# Exclude everything .* by default
+.*
+
+# Ignore AGENT helper files
+AGENTS.md
+
+# Ignore runtime, data, and generated analysis outputs
+data/
+processed_data/
+output/
+npi_project/
+
+# Keep core repository metadata and docs
+!.gitignore
+!README.md
+!LICENSE
+
+# Keep source code
+!scripts/
+!scripts/*.R
+
+# Keep lightweight rendered figures used by the README
+!docs/
+!docs/*.png
+
+
+
+
