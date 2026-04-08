@@ -33,6 +33,11 @@ The intake audit SHALL validate the structure and values of the canonical raw in
 - **THEN** the audit SHALL report the normalization rule required for those columns
 - **AND** the audit SHALL identify whether the current PRN script logic can still parse them
 
+#### Scenario: Validation exposes a live PRN parsing gap
+- **WHEN** the audit shows that an active `prn_injections.xlsx` header with real PRN marker cells is not being normalized into the downstream PRN workflow
+- **THEN** the change SHALL align `scripts/count_prn_injections.R` with the audited normalization rule before the workflow is marked rerun-ready
+- **AND** the rerun-ready audit state SHALL reflect that alignment
+
 #### Scenario: RedCap workbook contains incomplete grouping or sentinel values
 - **WHEN** the canonical `2024-10-22 Endolaserless_RedCap_Data.xlsx` workbook contains missing `Group` values outside the first subject row or sentinel values used to represent missing NPA
 - **THEN** the audit SHALL report the affected fields and rows
@@ -59,3 +64,8 @@ The intake audit SHALL compare configured code, runtime, and cloud roots with th
 - **WHEN** the audit inspects the active runtime artifacts used by the normalized NPI and PRN workflows
 - **THEN** it SHALL report whether the canonical processed and output branches look current enough for rerun comparison
 - **AND** it SHALL identify which reruns would be needed before a replication pass can be treated as ready
+
+#### Scenario: Compatibility-only processed branch is no longer active
+- **WHEN** the audit and downstream reruns confirm that the PRN workflow uses the canonical processed branch rather than the old week4-only compatibility branch
+- **THEN** the active runtime tree SHALL no longer require `processed_data/npi_project/output-week4_baseline`
+- **AND** the audit SHALL report that compatibility branch as absent from the active runtime path

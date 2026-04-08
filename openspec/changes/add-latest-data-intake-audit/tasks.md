@@ -10,6 +10,7 @@
 - [x] 2.2 Add workbook checks for `Stats Wisconsin (Nick Edited).xlsx` sheet 6 covering expected columns, non-numeric `Week` cells, starred numeric strings, and q8/q16 subject coverage used by `scripts/endolaserless_analysis-2.R`.
 - [x] 2.3 Add workbook checks for `prn_injections.xlsx` sheet 1 covering mixed week-label formats, PRN marker cells, and the subject/group fields used by `scripts/count_prn_injections.R`.
 - [x] 2.4 Add workbook checks for `2024-10-22 Endolaserless_RedCap_Data.xlsx` covering expected columns, missing `Group` values, and NPA-related missing-value handling used downstream in `scripts/count_prn_injections.R`, including `"not gradable"` and values `>= 8888`.
+- [x] 2.5 Align the live PRN visit-header normalization with the audited raw workbook when validation shows real PRN marker cells under headers that the current parser misses.
 
 ## 3. Stale Cache Detection And Project Shortlist
 
@@ -23,3 +24,4 @@
 - [x] 4.2 If the audit indicates rerun-ready inputs, rerun `scripts/endolaserless_analysis-2.R` and verify the regenerated processed workbooks under runtime `processed_data/npi_project`.
 - [x] 4.3 Rerun `scripts/count_prn_injections.R` against the reconciled processed workbook path and verify the downstream PRN outputs under runtime `output/npi_project/count_prn_injections`.
 - [x] 4.4 Review any affected Prism-facing exports or `docs/*.png` mirrors and document whether they remain current or need regeneration after the audited rerun.
+- [x] 4.5 Archive the obsolete week4-only compatibility processed branch out of the active runtime tree once rerun validation confirms it is no longer needed.

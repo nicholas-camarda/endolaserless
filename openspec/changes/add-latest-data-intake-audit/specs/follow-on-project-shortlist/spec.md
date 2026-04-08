@@ -9,6 +9,11 @@ The change SHALL produce a follow-on project shortlist derived from the audited 
 - **AND** the shortlist SHALL identify the exact raw files, processed workbooks, and downstream outputs involved
 - **AND** it SHALL rank a replication or cache-consistency pass ahead of new substantive analyses when that pass is ready
 
+#### Scenario: PRN reason stratification becomes ready after parser alignment
+- **WHEN** the audit-driven parser alignment brings previously inconsistent PRN visit headers into the active week-based workflow
+- **THEN** the shortlist SHALL be allowed to promote PRN reason stratification from blocked to ready
+- **AND** it SHALL tie that readiness to the audited `prn_injections.xlsx` input and refreshed PRN runtime exports
+
 #### Scenario: Audit identifies blocked analyses
 - **WHEN** a candidate follow-on project depends on unresolved cleaning issues, path mismatches, or stale caches
 - **THEN** the shortlist SHALL mark that project as blocked
