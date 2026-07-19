@@ -45,7 +45,7 @@
 - Consumes: current dirty branch state based on `main` commit `456aae5c6845b7417adec1299b729165bfddcc0a`.
 - Produces: verified local recovery bundle, binary patch, untracked-file archive, hashes, and a provenance commit containing the existing dirty work unchanged.
 
-- [ ] **Step 1: Capture the exact live state and hashes**
+- [x] **Step 1: Capture the exact live state and hashes**
 
 ```bash
 RUN_ID=$(date -u +%Y%m%dT%H%M%SZ)
@@ -61,7 +61,7 @@ git bundle create "$CAPTURE/repository.bundle" --all
 find "$CAPTURE" -type f -exec shasum -a 256 {} \; | sort > "$CAPTURE/SHA256SUMS"
 ```
 
-- [ ] **Step 2: Verify the recovery package**
+- [x] **Step 2: Verify the recovery package**
 
 ```bash
 git bundle verify "$CAPTURE/repository.bundle"
@@ -72,7 +72,7 @@ shasum -a 256 -c "$CAPTURE/SHA256SUMS"
 
 Expected: all commands exit 0; the tar contains the five ordinarily untracked files plus the ignored `.openspec.yaml`; no raw workbook or runtime output is present.
 
-- [ ] **Step 3: Commit only the captured user work**
+- [x] **Step 3: Commit only the captured user work**
 
 ```bash
 git add openspec/specs/runtime-layout-assessment/spec.md scripts/project_paths.R \
@@ -98,7 +98,7 @@ Expected: the commit contains the captured dirty files and no data/output files.
 - Produces: `endolaserless_paths()` fields `cloud_root`, `data_root`, `documents_root`, `references_root`, `durable_outputs_root`, `npi_durable_outputs_root`, and `neovascularization_durable_outputs_root` while retaining all currently consumed runtime fields.
 - Produces: `mirror_neovascularization_published_outputs(..., dry_run = TRUE)` and runtime-only `ensure_neovascularization_project_layout()`.
 
-- [ ] **Step 1: Write the isolated test runner**
+- [x] **Step 1: Write the isolated test runner**
 
 ```r
 test_files <- sort(list.files("tests", pattern = "^test_.*[.]R$", full.names = TRUE))
@@ -110,7 +110,7 @@ for (test_file in test_files) {
 message("PASS all R tests")
 ```
 
-- [ ] **Step 2: Write failing path tests**
+- [x] **Step 2: Write failing path tests**
 
 `tests/test_project_paths.R` must unset all three path variables, source `scripts/project_paths.R`, and assert:
 
@@ -124,7 +124,7 @@ stopifnot(startsWith(paths$npi_canonical_output_root, paste0(paths$runtime_root,
 
 It must then set all three variables to temporary roots and assert every derived path follows those overrides.
 
-- [ ] **Step 3: Write failing output-boundary tests**
+- [x] **Step 3: Write failing output-boundary tests**
 
 With temporary source/runtime/cloud roots, source `scripts/neovascularization_project.R`, call ordinary setup, and assert:
 
@@ -140,7 +140,7 @@ stopifnot(all(is.na(preview$copied)), !dir.exists(cloud_root))
 
 The same test must scan uncommented active lines in `scripts/*.R` and reject `~/Downloads`, `/OneDrive-Personal/Research/endolaserless`, and generated paths derived from `getwd()`.
 
-- [ ] **Step 4: Run RED**
+- [x] **Step 4: Run RED**
 
 ```bash
 Rscript tests/run_tests.R
@@ -148,11 +148,11 @@ Rscript tests/run_tests.R
 
 Expected: failures identify the old cloud root, `data` instead of `data/raw`, absent durable-output fields, implicit cloud directory creation, publication defaulting to live copy, `getwd()` source default, and the active Downloads workbook write.
 
-- [ ] **Step 5: Implement only the tested boundary contract**
+- [x] **Step 5: Implement only the tested boundary contract**
 
 Set canonical defaults in `endolaserless_paths()`, derive all generated roots from runtime, derive publish roots from Project Vault `outputs`, make publication dry-run by default, and make ordinary neovascularization setup create only its two runtime directories. Route `npi_vs_npi_baseline-regression.xlsx` and the default graphics device beneath `paths$npi_canonical_output_root`.
 
-- [ ] **Step 6: Run GREEN and commit**
+- [x] **Step 6: Run GREEN and commit**
 
 ```bash
 Rscript tests/run_tests.R
@@ -176,11 +176,11 @@ Expected: all tests pass, all active scripts parse, and only tested path/output 
 - NPI produces `runtime/processed_data/npi_project/output-week4_week16_baseline/cached_long_input_data.xlsx`.
 - PRN consumes that workbook and produces `runtime/output/npi_project/count_prn_injections/*.xlsx`.
 
-- [ ] **Step 1: Capture source/cloud metadata and runtime workbook signatures**
+- [x] **Step 1: Capture source/cloud metadata and runtime workbook signatures**
 
 Record protected-tree path/type/size/mtime metadata without opening unrelated cloud files. For existing runtime `.xlsx` files, record SHA-256 plus sheet names, dimensions, and column names with `openxlsx`.
 
-- [ ] **Step 2: Verify and hash the three exact raw inputs**
+- [x] **Step 2: Verify and hash the three exact raw inputs**
 
 ```bash
 RAW="$HOME/Library/CloudStorage/OneDrive-Personal/Project Vault/Research/endolaserless/data/raw"
@@ -190,7 +190,7 @@ shasum -a 256 \
   "$RAW/prn_injections.xlsx"
 ```
 
-- [ ] **Step 3: Run the NPI producer and PRN consumer**
+- [x] **Step 3: Run the NPI producer and PRN consumer**
 
 ```bash
 env -u ENDOLASERLESS_CODE_ROOT -u ENDOLASERLESS_RUNTIME_ROOT -u ENDOLASERLESS_CLOUD_ROOT \
@@ -201,7 +201,7 @@ env -u ENDOLASERLESS_CODE_ROOT -u ENDOLASERLESS_RUNTIME_ROOT -u ENDOLASERLESS_CL
 
 Expected: both exit 0; no source-root `Rplots.pdf`; NPI and PRN artifacts refresh only in runtime.
 
-- [ ] **Step 4: Smoke-check neovascularization without real-data execution**
+- [x] **Step 4: Smoke-check neovascularization without real-data execution**
 
 ```bash
 Rscript -e 'parse("scripts/neovascularization_data_audit.R"); source("scripts/neovascularization_project.R"); cat("neovascularization_parse=pass\n")'
@@ -210,7 +210,7 @@ Rscript tests/run_tests.R
 
 Expected: parsing and isolated temporary-root layout tests pass. Do not run `scripts/neovascularization_data_audit.R` as an entry point.
 
-- [ ] **Step 5: Compare outputs and protected trees**
+- [x] **Step 5: Compare outputs and protected trees**
 
 Require unchanged source/cloud names and sizes except expected access metadata for the three raw inputs. Compare workbook sheet names, dimensions, columns, subject identifiers, and schedule counts. Investigate any semantic difference; do not accept exit status alone.
 
@@ -225,7 +225,7 @@ Require unchanged source/cloud names and sizes except expected access metadata f
 **Interfaces:**
 - Produces: present-state documentation, passing repository/controller gates, clean branch, and focused GitHub PR.
 
-- [ ] **Step 1: Update present-state documentation**
+- [x] **Step 1: Update present-state documentation**
 
 Document the canonical source/runtime/raw/output paths, NPI and PRN commands, exploratory neovascularization status, runtime-only generation, and explicit publishing. State that OpenSpec records are retained context while Superpowers/TDD governs new work. Replace only active old-root path statements found by:
 
@@ -235,11 +235,11 @@ rg -n '/OneDrive-Personal/Research/endolaserless' README.md AGENTS.md openspec
 
 Do not rewrite historical rationale or scientific requirements.
 
-- [ ] **Step 2: Update the workspace manifest current state**
+- [x] **Step 2: Update the workspace manifest current state**
 
 Set Project Vault status and raw/output paths to the verified live state; remove active claims that data remains under the absent legacy `Research/endolaserless` root. Retain the old path only as legacy evidence.
 
-- [ ] **Step 3: Run final verification**
+- [x] **Step 3: Run final verification**
 
 ```bash
 Rscript tests/run_tests.R
@@ -251,7 +251,7 @@ python3 "$WORKSPACE_CONTROLLER_ROOT/work/file-org-migration/scripts/check_readin
 
 Expected: all repository checks pass, controller readiness passes, and Git contains no raw data, runtime artifacts, or private recovery files.
 
-- [ ] **Step 4: Commit and publish**
+- [x] **Step 4: Commit and publish**
 
 ```bash
 git add README.md scripts tests docs/superpowers
