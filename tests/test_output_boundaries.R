@@ -81,6 +81,21 @@ find_protected_write_calls <- function(input) {
     mutation_targets <- function(node) {
         name <- call_name(node)
         arguments <- as.list(node)[-1L]
+        destination_name <- switch(
+            name,
+            "dir.create" = "path",
+            "file" = "description",
+            "file.copy" = "to",
+            "file.rename" = "to",
+            "ggsave" = "filename",
+            "unlink" = "x",
+            "writeLines" = "con",
+            "file"
+        )
+        named_destination <- which(names(arguments) == destination_name)
+        if (length(named_destination) > 0L) {
+            return(arguments[named_destination[[1L]]])
+        }
         if (name %in% c("file.copy", "file.rename")) {
             return(arguments[intersect(2L, seq_along(arguments))])
         }
@@ -213,6 +228,15 @@ run_output_boundary_contract <- function() {
         'write.csv(x, file.path(target, "x.csv"))',
         sep = "\n"
     ))
+    synthetic_named_write <- parse(
+        text = 'write.csv(file = file.path(paths$code_root, "x.csv"), x = x)'
+    )
+    synthetic_named_copy <- parse(
+        text = 'file.copy(to = file.path(paths$cloud_root, "x.xlsx"), from = src)'
+    )
+    synthetic_named_sink <- parse(
+        text = 'sink(type = "message", file = file.path(paths$code_root, "x.log"))'
+    )
     stopifnot(
         length(protected_write_calls) == 0L,
         length(find_protected_write_calls(synthetic_source_write)) == 1L,
@@ -220,6 +244,9 @@ run_output_boundary_contract <- function() {
         length(find_protected_write_calls(synthetic_file_write)) == 1L,
         length(find_protected_write_calls(synthetic_cloud_copy)) == 1L,
         length(find_protected_write_calls(synthetic_alias_write)) == 1L,
+        length(find_protected_write_calls(synthetic_named_write)) == 1L,
+        length(find_protected_write_calls(synthetic_named_copy)) == 1L,
+        length(find_protected_write_calls(synthetic_named_sink)) == 1L,
         !grepl("~/Downloads", script_text, fixed = TRUE),
         !grepl("/OneDrive-Personal/Research/endolaserless", script_text, fixed = TRUE),
         !grepl('"ENDOLASERLESS_CODE_ROOT",\ngetwd()', script_text, fixed = TRUE),
