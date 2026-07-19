@@ -12,7 +12,7 @@ base_output_dir <- paths$npi_output_root
 top_output_dir <- paths$npi_canonical_output_root
 dir.create(top_output_dir, showWarnings = FALSE, recursive = TRUE)
 
-runtime_plot_file <- file.path(top_output_dir, "Rplots.pdf")
+runtime_plot_file <- file.path(top_output_dir, "npi_plots.pdf")
 options(device = function(...) grDevices::pdf(file = runtime_plot_file, ...))
 
 # =============================================================================

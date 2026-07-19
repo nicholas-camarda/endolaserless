@@ -19,6 +19,12 @@ active_script_text <- function() {
     paste(trimmed[nzchar(trimmed) & !startsWith(trimmed, "#")], collapse = "\n")
 }
 
+active_file_text <- function(path) {
+    lines <- readLines(path, warn = FALSE)
+    trimmed <- trimws(lines)
+    paste(trimmed[nzchar(trimmed) & !startsWith(trimmed, "#")], collapse = "\n")
+}
+
 run_output_boundary_contract <- function() {
     old_values <- Sys.getenv(path_env_names, unset = NA_character_)
     names(old_values) <- path_env_names
@@ -56,10 +62,32 @@ run_output_boundary_contract <- function() {
     )
 
     script_text <- active_script_text()
+    npi_text <- active_file_text(file.path("scripts", "endolaserless_analysis-2.R"))
+    prn_text <- active_file_text(file.path("scripts", "count_prn_injections.R"))
     stopifnot(
         !grepl("~/Downloads", script_text, fixed = TRUE),
         !grepl("/OneDrive-Personal/Research/endolaserless", script_text, fixed = TRUE),
-        !grepl('"ENDOLASERLESS_CODE_ROOT",\ngetwd()', script_text, fixed = TRUE)
+        !grepl('"ENDOLASERLESS_CODE_ROOT",\ngetwd()', script_text, fixed = TRUE),
+        grepl(
+            'runtime_plot_file <- file.path(top_output_dir, "npi_plots.pdf")',
+            npi_text,
+            fixed = TRUE
+        ),
+        grepl(
+            'runtime_plot_file <- file.path(base_output_dir, "prn_plots.pdf")',
+            prn_text,
+            fixed = TRUE
+        ),
+        grepl(
+            "options(device = function(...) grDevices::pdf(",
+            npi_text,
+            fixed = TRUE
+        ),
+        grepl(
+            "options(device = function(...) grDevices::pdf(",
+            prn_text,
+            fixed = TRUE
+        )
     )
 }
 
