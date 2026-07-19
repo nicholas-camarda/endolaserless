@@ -10,6 +10,10 @@ base_output_dir <- paths$npi_output_root
 
 # Set the specific analysis output directory
 top_output_dir <- paths$npi_canonical_output_root
+dir.create(top_output_dir, showWarnings = FALSE, recursive = TRUE)
+
+runtime_plot_file <- file.path(top_output_dir, "Rplots.pdf")
+options(device = function(...) grDevices::pdf(file = runtime_plot_file, ...))
 
 # =============================================================================
 # LIBRARIES AND SETUP
@@ -300,7 +304,7 @@ summary(res)
 broom.mixed::tidy(res) %>%
     filter(effect == "fixed") %>%
     rstatix::add_significance("p.value") %>%
-    write.xlsx("~/Downloads/npi_vs_npi_baseline-regression.xlsx")
+    write.xlsx(file.path(top_output_dir, "npi_vs_npi_baseline-regression.xlsx"))
 
 # diff_long_full_dataset %>%
 #     print(n = Inf)
