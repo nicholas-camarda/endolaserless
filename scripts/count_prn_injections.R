@@ -9,6 +9,9 @@ paths <- endolaserless_paths()
 base_output_dir <- paths$npi_prn_output_root
 dir.create(base_output_dir, showWarnings = FALSE, recursive = TRUE)
 
+runtime_plot_file <- file.path(base_output_dir, "prn_plots.pdf")
+options(device = function(...) grDevices::pdf(file = runtime_plot_file, ...))
+
 # =============================================================================
 # LIBRARIES AND SETUP
 # =============================================================================

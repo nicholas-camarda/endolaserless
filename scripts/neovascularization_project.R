@@ -20,9 +20,12 @@ neovascularization_project_paths <- function(paths = endolaserless_paths()) {
 
 ensure_neovascularization_project_layout <- function(paths = endolaserless_paths()) {
     layout <- neovascularization_project_paths(paths)
-    all_dirs <- unique(unname(unlist(layout, use.names = FALSE)))
+    runtime_dirs <- unique(unname(unlist(
+        layout[c("runtime_output_root", "runtime_processed_root")],
+        use.names = FALSE
+    )))
 
-    invisible(lapply(all_dirs, dir.create, recursive = TRUE, showWarnings = FALSE))
+    invisible(lapply(runtime_dirs, dir.create, recursive = TRUE, showWarnings = FALSE))
     layout
 }
 
@@ -120,7 +123,7 @@ mirror_neovascularization_published_outputs <- function(
     source_root = endolaserless_paths()$neovascularization_output_root,
     destination_root = endolaserless_paths()$neovascularization_published_root,
     overwrite = FALSE,
-    dry_run = FALSE
+    dry_run = TRUE
 ) {
     if (!dir.exists(source_root)) {
         warning("Source root does not exist: ", source_root)

@@ -6,7 +6,7 @@ context: |
   `scripts/endolaserless_analysis-2.R` is the active NPI pipeline, `scripts/count_prn_injections.R` consumes its processed workbook outputs, and `scripts/neovascularization_project.R` is a scaffold-only helper for the unstarted neovascularization track.
   Path resolution is centralized in `scripts/project_paths.R`.
   That resolver supports `ENDOLASERLESS_CODE_ROOT`, `ENDOLASERLESS_RUNTIME_ROOT`, and `ENDOLASERLESS_CLOUD_ROOT` overrides and should model the umbrella repo plus explicit `npi_project` and `neovascularization_project` roots.
-  Shared raw study inputs resolve under the cloud `data` root, while regenerated processed workbooks and outputs resolve under runtime `processed_data/<subproject>` and `output/<subproject>`.
+  Shared raw study inputs resolve under the cloud `data/raw` root, while regenerated processed workbooks and outputs resolve under runtime `processed_data/<subproject>` and `output/<subproject>`.
   Cloud subproject folders are archive or published-output homes, not canonical code roots.
   `docs/*.png` are publication-display mirrors; plan changes against the underlying runtime outputs rather than treating those PNGs as canonical sources.
   Core domain terms remain q8 versus q16 schedules, week 4 or week 16 baselines, NPI/NPA, cumulative injections, and PRN rescue injections.
