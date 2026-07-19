@@ -14,7 +14,7 @@ endolaserless_paths <- function() {
     )
     runtime_root <- resolve_path_root(
         "ENDOLASERLESS_RUNTIME_ROOT",
-        "/Users/ncamarda/ProjectsRuntime/endolaserless"
+        "/Users/ncamarda/Workspaces/endolaserless/runtime"
     )
     cloud_root <- resolve_path_root(
         "ENDOLASERLESS_CLOUD_ROOT",
