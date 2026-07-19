@@ -25,6 +25,55 @@ active_file_text <- function(path) {
     paste(trimmed[nzchar(trimmed) & !startsWith(trimmed, "#")], collapse = "\n")
 }
 
+find_protected_write_calls <- function(input) {
+    tree <- if (is.character(input) && length(input) == 1L) parse(input) else input
+    mutating_functions <- c(
+        "dir.create", "ggsave", "pdf", "png", "save", "saveRDS",
+        "write.csv", "write.csv2", "write.table", "write.xlsx", "writeLines"
+    )
+    protected_roots <- c(
+        "paths$code_root",
+        "paths$cloud_root",
+        "paths$data_root",
+        "paths$documents_root",
+        "paths$durable_outputs_root",
+        "paths$references_root"
+    )
+    findings <- character()
+
+    call_name <- function(node) {
+        head <- node[[1L]]
+        if (is.symbol(head)) {
+            return(as.character(head))
+        }
+        if (is.call(head) && as.character(head[[1L]]) %in% c("::", ":::")) {
+            return(as.character(head[[3L]]))
+        }
+        ""
+    }
+
+    visit <- function(node) {
+        if (is.call(node)) {
+            rendered <- paste(deparse(node, width.cutoff = 500L), collapse = " ")
+            if (
+                call_name(node) %in% mutating_functions &&
+                any(vapply(protected_roots, grepl, logical(1), x = rendered, fixed = TRUE))
+            ) {
+                findings <<- c(findings, rendered)
+            }
+            if (length(node) > 1L) {
+                invisible(lapply(as.list(node)[-1L], visit))
+            }
+        } else if (is.expression(node) || is.pairlist(node) || is.list(node)) {
+            invisible(lapply(node, visit))
+        }
+        invisible(NULL)
+    }
+
+    visit(tree)
+    unique(findings)
+}
+
 run_output_boundary_contract <- function() {
     old_values <- Sys.getenv(path_env_names, unset = NA_character_)
     names(old_values) <- path_env_names
@@ -64,7 +113,24 @@ run_output_boundary_contract <- function() {
     script_text <- active_script_text()
     npi_text <- active_file_text(file.path("scripts", "endolaserless_analysis-2.R"))
     prn_text <- active_file_text(file.path("scripts", "count_prn_injections.R"))
+    producer_files <- c(
+        file.path("scripts", "endolaserless_analysis-2.R"),
+        file.path("scripts", "count_prn_injections.R")
+    )
+    protected_write_calls <- unlist(
+        lapply(producer_files, find_protected_write_calls),
+        use.names = FALSE
+    )
+    synthetic_source_write <- parse(
+        text = 'write.csv(x, file.path(paths$code_root, "x.csv"))'
+    )
+    synthetic_cloud_write <- parse(
+        text = 'write.xlsx(x, file.path(paths$durable_outputs_root, "x.xlsx"))'
+    )
     stopifnot(
+        length(protected_write_calls) == 0L,
+        length(find_protected_write_calls(synthetic_source_write)) == 1L,
+        length(find_protected_write_calls(synthetic_cloud_write)) == 1L,
         !grepl("~/Downloads", script_text, fixed = TRUE),
         !grepl("/OneDrive-Personal/Research/endolaserless", script_text, fixed = TRUE),
         !grepl('"ENDOLASERLESS_CODE_ROOT",\ngetwd()', script_text, fixed = TRUE),

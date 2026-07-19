@@ -10,18 +10,18 @@ resolve_path_root <- function(env_name, default) {
 endolaserless_paths <- function() {
     code_root <- resolve_path_root(
         "ENDOLASERLESS_CODE_ROOT",
-        "/Users/ncamarda/Workspaces/endolaserless/source"
+        path.expand("~/Workspaces/endolaserless/source")
     )
     runtime_root <- resolve_path_root(
         "ENDOLASERLESS_RUNTIME_ROOT",
-        "/Users/ncamarda/Workspaces/endolaserless/runtime"
+        path.expand("~/Workspaces/endolaserless/runtime")
     )
     cloud_root <- resolve_path_root(
         "ENDOLASERLESS_CLOUD_ROOT",
-        paste0(
-            "/Users/ncamarda/Library/CloudStorage/OneDrive-Personal/",
+        path.expand(paste0(
+            "~/Library/CloudStorage/OneDrive-Personal/",
             "Project Vault/Research/endolaserless"
-        )
+        ))
     )
 
     shared_data_root <- file.path(cloud_root, "data", "raw")

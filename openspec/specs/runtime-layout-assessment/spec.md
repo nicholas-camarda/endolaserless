@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: Inventory the active runtime tree
-The repo SHALL provide a runtime-layout assessment that inventories the active directories and key workbooks under `/Users/ncamarda/Workspaces/endolaserless/runtime` and records their role in the current workflow.
+The repo SHALL provide a runtime-layout assessment that inventories the active directories and key workbooks under `~/Workspaces/endolaserless/runtime` and records their role in the current workflow.
 
 #### Scenario: NPI runtime tree is assessed
 - **WHEN** the assessment runs against the current runtime root

@@ -23,10 +23,10 @@ Superpowers specifications and tests govern new implementation work. Existing Op
 
 ## Data and Output Boundaries
 
-- Source: `/Users/ncamarda/Workspaces/endolaserless/source`
-- Runtime: `/Users/ncamarda/Workspaces/endolaserless/runtime`
-- Raw inputs: `/Users/ncamarda/Library/CloudStorage/OneDrive-Personal/Project Vault/Research/endolaserless/data/raw`
-- Durable selected outputs: `/Users/ncamarda/Library/CloudStorage/OneDrive-Personal/Project Vault/Research/endolaserless/outputs`
+- Source: repository root (`ENDOLASERLESS_CODE_ROOT`)
+- Runtime: `ENDOLASERLESS_RUNTIME_ROOT`
+- Raw inputs: `ENDOLASERLESS_CLOUD_ROOT/data/raw`
+- Durable selected outputs: `ENDOLASERLESS_CLOUD_ROOT/outputs`
 
 No ordinary workflow may write generated output into source, Downloads, the raw-data tree, or Project Vault outputs. Publishing remains explicit and dry-run-first.
 

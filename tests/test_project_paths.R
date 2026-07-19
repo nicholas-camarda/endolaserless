@@ -21,14 +21,14 @@ run_project_path_contract <- function() {
     source(file.path("scripts", "project_paths.R"), local = TRUE)
 
     paths <- endolaserless_paths()
-    expected_cloud_root <- paste0(
-        "/Users/ncamarda/Library/CloudStorage/OneDrive-Personal/",
+    expected_cloud_root <- path.expand(paste0(
+        "~/Library/CloudStorage/OneDrive-Personal/",
         "Project Vault/Research/endolaserless"
-    )
+    ))
 
     stopifnot(
-        identical(paths$code_root, "/Users/ncamarda/Workspaces/endolaserless/source"),
-        identical(paths$runtime_root, "/Users/ncamarda/Workspaces/endolaserless/runtime"),
+        identical(paths$code_root, path.expand("~/Workspaces/endolaserless/source")),
+        identical(paths$runtime_root, path.expand("~/Workspaces/endolaserless/runtime")),
         identical(paths$cloud_root, expected_cloud_root),
         identical(paths$data_root, file.path(paths$cloud_root, "data", "raw")),
         identical(paths$documents_root, file.path(paths$cloud_root, "documents")),

@@ -13,7 +13,7 @@
 - Preserve all existing OpenSpec records, but do not use OpenSpec CLI validation or change-completion status as an implementation gate.
 - Do not execute or extend `scripts/neovascularization_data_audit.R` against real data.
 - Raw inputs resolve to `Project Vault/Research/endolaserless/data/raw`.
-- Generated output remains beneath `/Users/ncamarda/Workspaces/endolaserless/runtime`.
+- Generated output remains beneath `~/Workspaces/endolaserless/runtime`.
 - Project Vault `outputs` is written only by an explicit, dry-run-first publish action.
 - Do not delete, copy, or broadly hydrate cloud trees.
 - Do not add compatibility fallbacks or weaken tests to obtain a passing run.
@@ -39,7 +39,7 @@
 - Preserve: `scripts/project_paths.R`
 - Preserve: `openspec/changes/add-neovascularization-data-audit/`
 - Preserve: `scripts/neovascularization_data_audit.R`
-- Create privately at execution time: `/Users/ncamarda/Workspaces/endolaserless/archive/pre-certification-dirty-capture-$RUN_ID/`
+- Create privately at execution time: `~/Workspaces/endolaserless/archive/pre-certification-dirty-capture-$RUN_ID/`
 
 **Interfaces:**
 - Consumes: current dirty branch state based on `main` commit `456aae5c6845b7417adec1299b729165bfddcc0a`.
@@ -49,14 +49,14 @@
 
 ```bash
 RUN_ID=$(date -u +%Y%m%dT%H%M%SZ)
-CAPTURE="/Users/ncamarda/Workspaces/endolaserless/archive/pre-certification-dirty-capture-$RUN_ID"
+CAPTURE="$HOME/Workspaces/endolaserless/archive/pre-certification-dirty-capture-$RUN_ID"
 mkdir -p "$CAPTURE"
 chmod 700 "$CAPTURE"
 git status --porcelain=v2 --branch --untracked-files=all
 git diff --binary > "$CAPTURE/tracked-dirty.patch"
 git ls-files --others --exclude-standard -z > "$CAPTURE/untracked.zlist"
 printf '%s\0' openspec/changes/add-neovascularization-data-audit/.openspec.yaml >> "$CAPTURE/untracked.zlist"
-tar -C /Users/ncamarda/Workspaces/endolaserless/source --null -T "$CAPTURE/untracked.zlist" -czf "$CAPTURE/untracked.tar.gz"
+tar -C "$HOME/Workspaces/endolaserless/source" --null -T "$CAPTURE/untracked.zlist" -czf "$CAPTURE/untracked.tar.gz"
 git bundle create "$CAPTURE/repository.bundle" --all
 find "$CAPTURE" -type f -exec shasum -a 256 {} \; | sort > "$CAPTURE/SHA256SUMS"
 ```
@@ -115,8 +115,8 @@ message("PASS all R tests")
 `tests/test_project_paths.R` must unset all three path variables, source `scripts/project_paths.R`, and assert:
 
 ```r
-stopifnot(identical(paths$code_root, "/Users/ncamarda/Workspaces/endolaserless/source"))
-stopifnot(identical(paths$runtime_root, "/Users/ncamarda/Workspaces/endolaserless/runtime"))
+stopifnot(identical(paths$code_root, path.expand("~/Workspaces/endolaserless/source")))
+stopifnot(identical(paths$runtime_root, path.expand("~/Workspaces/endolaserless/runtime")))
 stopifnot(identical(paths$data_root, file.path(paths$cloud_root, "data", "raw")))
 stopifnot(identical(paths$durable_outputs_root, file.path(paths$cloud_root, "outputs")))
 stopifnot(startsWith(paths$npi_canonical_output_root, paste0(paths$runtime_root, "/")))
@@ -170,7 +170,7 @@ Expected: all tests pass, all active scripts parse, and only tested path/output 
 - Read exactly: `data/raw/Stats Wisconsin (Nick Edited).xlsx`
 - Read exactly: `data/raw/2024-10-22 Endolaserless_RedCap_Data.xlsx`
 - Read exactly: `data/raw/prn_injections.xlsx`
-- Generate only beneath: `/Users/ncamarda/Workspaces/endolaserless/runtime/`
+- Generate only beneath: `~/Workspaces/endolaserless/runtime/`
 
 **Interfaces:**
 - NPI produces `runtime/processed_data/npi_project/output-week4_week16_baseline/cached_long_input_data.xlsx`.
@@ -183,7 +183,7 @@ Record protected-tree path/type/size/mtime metadata without opening unrelated cl
 - [ ] **Step 2: Verify and hash the three exact raw inputs**
 
 ```bash
-RAW='/Users/ncamarda/Library/CloudStorage/OneDrive-Personal/Project Vault/Research/endolaserless/data/raw'
+RAW="$HOME/Library/CloudStorage/OneDrive-Personal/Project Vault/Research/endolaserless/data/raw"
 shasum -a 256 \
   "$RAW/Stats Wisconsin (Nick Edited).xlsx" \
   "$RAW/2024-10-22 Endolaserless_RedCap_Data.xlsx" \
@@ -220,7 +220,7 @@ Require unchanged source/cloud names and sizes except expected access metadata f
 - Modify: `README.md`
 - Modify locally only: `AGENTS.md`
 - Modify: OpenSpec files containing an active `/OneDrive-Personal/Research/endolaserless` path statement
-- Modify: `/Users/ncamarda/Workspaces/endolaserless/manifest.yaml`
+- Modify locally: `~/Workspaces/endolaserless/manifest.yaml`
 
 **Interfaces:**
 - Produces: present-state documentation, passing repository/controller gates, clean branch, and focused GitHub PR.
@@ -245,8 +245,8 @@ Set Project Vault status and raw/output paths to the verified live state; remove
 Rscript tests/run_tests.R
 Rscript -e 'files <- list.files("scripts", pattern="[.]R$", full.names=TRUE); invisible(lapply(files, parse)); cat("parsed=", length(files), " failed=0\n", sep="")'
 git diff --check
-python3 /Users/ncamarda/Documents/Codex/2026-06-16/please-help-me-organize-this-folder/work/file-org-migration/scripts/validate_existing_workspaces.py
-python3 /Users/ncamarda/Documents/Codex/2026-06-16/please-help-me-organize-this-folder/work/file-org-migration/scripts/check_readiness.py
+python3 "$WORKSPACE_CONTROLLER_ROOT/work/file-org-migration/scripts/validate_existing_workspaces.py"
+python3 "$WORKSPACE_CONTROLLER_ROOT/work/file-org-migration/scripts/check_readiness.py"
 ```
 
 Expected: all repository checks pass, controller readiness passes, and Git contains no raw data, runtime artifacts, or private recovery files.
