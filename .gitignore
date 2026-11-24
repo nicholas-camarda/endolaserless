@@ -47,3 +47,6 @@ npi_project/
 
 
 
+
+# Claude Code session worktrees
+.claude/worktrees/
