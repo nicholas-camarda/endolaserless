@@ -10,7 +10,7 @@ resolve_path_root <- function(env_name, default) {
 endolaserless_paths <- function() {
     code_root <- resolve_path_root(
         "ENDOLASERLESS_CODE_ROOT",
-        path.expand("~/Workspaces/endolaserless/source")
+        path.expand("~/Workspaces/endolaserless")
     )
     runtime_root <- resolve_path_root(
         "ENDOLASERLESS_RUNTIME_ROOT",

@@ -27,7 +27,7 @@ run_project_path_contract <- function() {
     ))
 
     stopifnot(
-        identical(paths$code_root, path.expand("~/Workspaces/endolaserless/source")),
+        identical(paths$code_root, path.expand("~/Workspaces/endolaserless")),
         identical(paths$runtime_root, path.expand("~/Workspaces/endolaserless/runtime")),
         identical(paths$cloud_root, expected_cloud_root),
         identical(paths$data_root, file.path(paths$cloud_root, "data", "raw")),
